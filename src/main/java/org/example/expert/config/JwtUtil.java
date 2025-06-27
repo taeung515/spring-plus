@@ -23,7 +23,7 @@ public class JwtUtil {
     private static final String BEARER_PREFIX = "Bearer ";
 
     @Value("${app.jwt-expiration-milliseconds}")
-    private long TOKEN_TIME;
+    private long TOKEN_TIME = 60 * 60 * 1000L; // 60분
     @Value("${app.jwt-secret}")
     private String secretKey;
     private Key key;
@@ -35,12 +35,13 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public String createToken(Long userId, String email, UserRole userRole) {
+    public String createToken(Long userId, String nickname, String email, UserRole userRole) {
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(String.valueOf(userId))
+                        .claim("nickname", nickname)
                         .claim("email", email)
                         .claim("userRole", userRole)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
