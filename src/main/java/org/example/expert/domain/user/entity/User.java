@@ -1,6 +1,7 @@
 package org.example.expert.domain.user.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.expert.domain.common.dto.AuthUser;
@@ -10,7 +11,12 @@ import org.example.expert.domain.user.enums.UserRole;
 @Getter
 @Entity
 @NoArgsConstructor
-@Table(name = "users")
+@Table(
+        name = "users",
+        indexes = {
+                @Index(name = "idx_user_nickname", columnList = "nickname")
+        }
+)
 public class User extends Timestamped {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +28,7 @@ public class User extends Timestamped {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
+    @Builder
     public User(String nickname, String email, String password, UserRole userRole) {
         this.nickname = nickname;
         this.email = email;
